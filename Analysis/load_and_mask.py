@@ -1,5 +1,3 @@
-# load_and_mask.py
-
 import os
 import nibabel as nib
 from nilearn import datasets, image, masking

@@ -1,6 +1,8 @@
 import numpy as np
 import nibabel as nib
 import mne
+import matplotlib.pyplot as plt
+import seaborn as sns
 from scipy.spatial.distance import pdist, squareform
 from scipy.stats import spearmanr, pearsonr
 from sklearn.svm import SVC
@@ -92,6 +94,19 @@ def build_rdm(segment_data, metric='correlation'):
     rdm = squareform(dist_vec)
     return rdm
 
+def plot_rdm(rdm, title='RDM', save_path=None):
+    """
+    Plot the Representational Dissimilarity Matrix (RDM) using Seaborn.
+    """
+    plt.figure(figsize=(6, 5))
+    sns.heatmap(rdm, cmap='viridis', square=True, cbar=True)
+    plt.title(title)
+    plt.xlabel('Segment')
+    plt.ylabel('Segment')
+    plt.tight_layout()
+    if save_path:
+        plt.savefig(save_path, dpi=150)
+    plt.show()
 
 def cross_modal_rsa(rdm1, rdm2, method='spearman'):
     """
