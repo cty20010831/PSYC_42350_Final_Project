@@ -16,9 +16,11 @@
 \shorttitle{PSYC 42350 Final Project}
 \author{Sam}
 \duedate{March 12, 2025}
+\course{PSYC 42350}
 \affiliation{University of Chicago}
+\professor{Dr. Wilma Bainbridge \& Dr. Monica Rosenberg}
 
-\abstract{This paper investigates how narrative content modulates neural synchrony by leveraging simultaneous EEG-fMRI data collected during naturalistic viewing. We employ two complementary analyses—inter-subject correlation (ISC) and cross-modal representational similarity analysis (RSA)—to assess whether coherent narratives produce higher inter-subject neural synchrony and aligned multimodal representations compared to non-narrative stimuli. Our analysis is based on an open-access dataset (Telesford et al., 2023), and builds upon recent literature demonstrating that narratives evoke shared neural processing in both temporal (EEG) and spatial (fMRI) domains.}
+\abstract{Narrative stimuli have been shown to evoke strongly synchronized brain responses, yet the extent to which they also align cross-modal neural representations remains less understood. To compare the shared neural synchrony and cross-modal alignment of neural signals between narrative and non-narrative stimuli, this study leveraged an open-access dataset featuring simultaneous EEG-fMRI recordings of participants viewing narrative (e.g., \emph{Despicable Me}) and non-narrative (\emph{Inscapes}) clips using two complementary analyses: 1) inter-subject correlation (ISC) of fMRI signals (to measure shared neural synchrony) and 2) cross-modal representational similarity analysis (RSA; to assess the alignment of EEG and fMRI patterns). The ISC results revealed that coherent narratives significantly enhanced synchrony in high-order cortical networks, including the Control/Frontoparietal and Default Mode networks, consistent with the notion that plot coherence and emotional structure drive inter-subject alignment. In contrast, RSA demonstrated only modest differences between narrative and non-narrative conditions, with no statistically significant cross-modal alignment. Additionally, classification based on RSA features yielded near-chance accuracy (52.8\%), indicating that the current parameters did not robustly discriminate between narrative and non-narrative stimuli. These findings suggest that while narrative content powerfully synchronizes brain activity across individuals, further methodological refinements may be needed to capture the finer-grained temporal-spatial dynamics that could more effectively reveal cross-modal representational similarities.}
 
 \begin{document}
 \maketitle
@@ -44,15 +46,15 @@ The experimental paradigm encompassed a variety of tasks: a flickering checkerbo
 
 The fMRI data were preprocessed using the Connectome Computation System (CCS). Anatomical images underwent skull stripping, segmentation, and registration to the MNI152 template using tools such as the Brain Extraction Toolbox (BET) and Freesurfer. Functional data were processed by discarding the initial five volumes to allow magnetization stabilization, followed by despiking, slice timing correction, and motion correction. The functional images were then skull-stripped and aligned with the anatomical images using boundary-based registration. Nuisance variables, including cerebrospinal fluid (CSF), white matter (WM) signals, and motion parameters, were regressed out from the time series. Finally, the data were temporally filtered (0.01–0.1 Hz) and spatially smoothed using a 6 mm full-width half-maximum (FWHM) Gaussian kernel, with time series subsequently extracted from 400 regions of interest based on the Schaefer 400 atlas.
 
-This comprehensive dataset provides a rich foundation for exploring the neural mechanisms underlying naturalistic narrative processing. In the present study, I specifically focus on two sets of naturalistic stimuli: abstract, computer-generated animation \textit{Inscapes} and segments from the film \textit{Despicable Me}. These two datasets enable us to compare the neural synchrony and representational dynamics elicited by narrative versus non-narrative visual content.
+This comprehensive dataset provides a rich foundation for exploring the neural mechanisms underlying naturalistic narrative processing. In the present study, I specifically focus on two sets of naturalistic stimuli: abstract, computer-generated animation \textit{Inscapes} and segments from the film \textit{Despicable Me}. These two naturalistic stimuli enables the comparison of the neural synchrony and representational dynamics elicited by narrative versus non-narrative visual content.
 
 \subsection{Data Analysis}
 This study employs two complementary analytic techniques—inter-subject correlation (ISC) and representational similarity analysis (RSA)—to investigate neural synchrony and cross-modal representational alignment in a naturalistic EEG-fMRI dataset. The following sections describe the procedures implemented for each analysis, including data loading, segmentation, and subsequent statistical computations.
 
 \subsubsection{ISC}
-ISC measures the similarity of neural responses across individuals when exposed to the same naturalistic stimulus. In our analysis, only the fMRI time series were used to compute ISC. The preprocessed fMRI data were first loaded from the 4D NifTI file of each subject and flattened into a 2D matrix (time points $\times$ voxels). Data were acquired in MNI space with a resolution of 3\,mm. For each subject, the time course of each voxel was correlated with the mean time course of all other subjects to generate an individual ISC map. The resulting ISC maps were then aggregated within predefined regions corresponding to the 17 Yeo networks (e.g., visual, control, and default mode networks). To determine statistical significance, permutation tests were conducted by circularly shifting time series to generate a null distribution. The resulting $p$-values were then corrected for multiple comparisons using false discovery rate (FDR) procedures.
+ISC measures the similarity of neural responses across individuals when exposed to the same naturalistic stimulus. In this part, only the fMRI time series were used to compute ISC. The preprocessed fMRI data were first loaded from the 4D NifTI file of each subject and flattened into a 2D matrix (time points $\times$ voxels). Data were acquired in MNI space with a resolution of 3\,mm. For each subject, the time course of each voxel was correlated with the mean time course of all other subjects to generate an individual ISC map. The resulting ISC maps were then aggregated within predefined regions corresponding to the 17 Yeo networks (e.g., visual, control, and default mode networks; \cite{thomas_yeo_organization_2011}). To determine statistical significance, permutation tests were conducted by circularly shifting time series to generate a null distribution. The resulting $p$-values were then corrected for multiple comparisons using false discovery rate (FDR) procedures.
 
-\subsubsection{RSA}
+\subsubsection{Cross-Modal RSA}
 RSA provides a multivariate approach to compare the representational geometry of neural responses across different modalities. In this study, data from both EEG and fMRI, and from two conditions (narrative vs. non-narrative), were segmented into fixed-length windows of 10 seconds. For each segment, the average neural pattern was computed and then used to construct a representational dissimilarity matrix (RDM). In this process, the dissimilarity between each pair of segments was calculated as one minus the Pearson correlation coefficient.
 
 After the RDMs were constructed for EEG and fMRI separately, the upper triangular portions of the matrices were extracted to compute the Spearman correlation between the two sets of values. This process yields a single RSA value per subject and condition. Statistical significance was assessed using one-sample t-tests to determine if the RSA values significantly deviated from zero, and paired t-tests were used to compare RSA values between narrative and non-narrative conditions. Furthermore, a linear support vector machine (SVM) classifier, implemented via a 5-fold cross-validation scheme, was employed to evaluate whether the RSA features could reliably distinguish narrative from non-narrative segments.
@@ -137,15 +139,47 @@ Network       & 47.3045 & 16 & 336 & 0.0000 \\
 \end{tabular}
 \end{table}
 
+Figure \ref{fig:heatmap} illustrates the pairwise network comparisons, showing that numerous pairs of networks (e.g., Yeo Network 4 and Network 14) differ significantly in their ISC differences between narrative and non-narrative conditions. In other words, the coherence of the narrative stimulus appears to drive heightened synchrony in certain network pairs more strongly than others, corroborating the overall pattern detected by repeated-measures ANOVA.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=0.65\linewidth]{Results/Plots/Pairwise_Network_Heatmap.png}
+\caption{Pairwise FDR-corrected $p$-values ($\alpha=0.05$) among the 17 Yeo networks.}
+\label{fig:heatmap}
+\end{figure}
+
 Overall, the ISC results indicate that narrative stimuli produce significantly higher neural synchrony across participants, particularly within networks associated with high-level cognitive integration such as the Control/Frontoparietal and Default Mode networks. The large effect sizes and significant ANOVA results underscore the robust impact of narrative content on inter-subject alignment.
 
-\subsection{Cross-Modal RSA Results}
+\subsection{Cross-Modal RSA}
+In this study, data from both EEG and fMRI, and from two conditions (narrative vs. non-narrative), were segmented into fixed-length windows of 10 seconds. For each segment, the average neural pattern was computed and then used to construct a representational dissimilarity matrix (RDM). In this process, the dissimilarity between each pair of segments was calculated as one minus the Pearson correlation coefficient. After the RDMs were constructed for EEG and fMRI separately, I averaged them across subjects to obtain the group-level RDMs for each modality and condition (see Figures \ref{fig:rdm_narr} and  \ref{fig:rdm_non_narr}).
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=0.45\linewidth]{Results/Plots/Avg_EEG_RDM_narr.png}
+\hfill
+\includegraphics[width=0.45\linewidth]{Results/Plots/Avg_fMRI_RDM_narr.png}
+\caption{Average RDMs for the \textbf{narrative} condition. 
+\textbf{Left:} EEG RDM (averaged across subjects), 
+\textbf{Right:} fMRI RDM (averaged across subjects). 
+Each matrix displays the correlation distance (i.e., $1 - \text{Pearson correlation}$) among the 10-second segments along both axes.}
+\label{fig:rdm_narr}
+\end{figure}
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=0.45\linewidth]{Results/Plots/Avg_EEG_RDM_non_narr.png}
+\hfill
+\includegraphics[width=0.45\linewidth]{Results/Plots/Avg_fMRI_RDM_non_narr.png}
+\caption{Average RDMs for the \textbf{non-narrative} condition. \textbf{Left:} EEG RDM (averaged across subjects), \textbf{Right:} fMRI RDM (averaged across subjects). Each matrix shows the correlation distance among the 10-second segments for EEG or fMRI.}
+\label{fig:rdm_non_narr}
+\end{figure}
+
 At the group level, the RSA between the EEG and fMRI data yielded a mean correlation of 0.003 for the narrative condition ($p=0.6736$) and a mean correlation of $-0.009$ for the non-narrative condition ($p=0.02086$). A paired t-test comparing the RSA values between the narrative and non-narrative conditions resulted in $t=1.5057$ with a $p$-value of $0.1478$, indicating that the difference between conditions was not statistically significant. In addition, the classification analysis using the RSA features achieved an accuracy of 52.8\%, which is only marginally above the chance level.
 
 These findings suggest that while the narrative condition exhibits a slight positive trend in cross-modal representational alignment, the overall differences in RSA between narrative and non-narrative conditions remain modest. The modest classification accuracy further implies that the current RSA approach does not provide a robust discriminative signature for narrative versus non-narrative segments under the applied parameters.
 
 \section{Discussion}
-Designed to examine whether coherent narrative stimuli produce stronger neural synchrony than non-narrative stimuli, as well as to evaluate whether cross-modal representational similarity between EEG and fMRI data differs between these conditions, this study received mixed results answering these two questions. On the one hand, the ISC analysis provided robust evidence supporting the first research question. Specifically, 16 out of the 17 Yeo networks exhibited significantly higher ISC for narrative stimuli, with particularly large effects observed in high-order networks such as the Control/Frontoparietal (Network 14) and Default Mode networks. These findings reinforce previous literature suggesting that narrative content, with its inherent coherence of plot and emotional structure, powerfully aligns neural activity across individuals, especially in networks involved in cognitive integration and semantic processing.
+Aiming to examine whether coherent narrative stimuli produce stronger neural synchrony than non-narrative stimuli, as well as to evaluate whether cross-modal representational similarity between EEG and fMRI data differs between these conditions, this study received mixed results answering these two questions. On the one hand, the ISC analysis provided robust evidence supporting the first research question. Specifically, 16 out of the 17 Yeo networks exhibited significantly higher ISC for narrative stimuli, with particularly large effects observed in high-order networks such as the Control/Frontoparietal (Network 14) and Default Mode networks. These findings reinforce previous literature suggesting that narrative content, with its inherent coherence of plot and emotional structure, powerfully aligns neural activity across individuals, especially in networks involved in cognitive integration and semantic processing.
 
 On the other hand, however, the cross-modal RSA analysis yielded only modest differences between narrative and non-narrative conditions. Although the narrative condition showed a slight positive trend (mean RSA of 0.003) compared to a negative trend for non-narrative stimuli (mean RSA of $-0.009$), the paired t-test did not reveal a statistically significant difference ($p=0.1478$). Furthermore, the classification accuracy based on RSA features was near chance (52.8\%). These results suggest that, under the current analysis parameters, the representational alignment between EEG and fMRI does not robustly distinguish between narrative and non-narrative segments. This discrepancy may be due to differences in temporal resolution between EEG and fMRI, the choice of segmentation window, or the insufficient alignment of neural signals across modalities.
 
